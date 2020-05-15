@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>Isochrone Lunchbox Finish</title>
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+    <script src="https://api.mapbox.com/mapbox-gl-js/v1.10.0/mapbox-gl.js"></script>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v1.10.0/mapbox-gl.css" rel="stylesheet" />
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        #map {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <script
+        src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.min.js"></script>
+    <link rel="stylesheet"
+        href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.css"
+        type="text/css" />
+    <script src="https://unpkg.com/@turf/turf/turf.min.js"></script>
+
+    <div id="map"></div>
+
+    <script>
+        mapboxgl.accessToken = 'pk.eyJ1Ijoibm9ub3VtYXN5IiwiYSI6ImNrYTdtcGQwYTAzOGgycnBwc2F0dHdzdjYifQ.EzZeVp9SKvaRaCZm-i8JLg'
+        const transformRequest = (url) => {
+            const hasQuery = url.indexOf("?") !== -1;
+            const suffix = hasQuery ? "&pluginName=lunchboxIsochrones" : "?pluginName=lunchboxIsochrones";
+            return {
+                url: url + suffix
+            }
+        }
+
+        const isoUrl = "https://api.mapbox.com/isochrone/v1/mapbox";
+        const profile = "cycling";
+        const minutes = "10";
+        let coords = '4.8962943, 52.3656603'
+
+        const pointsUrl = "./lisbon.geojson"
+        let points = {}
+
+        const map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/nonoumasy/cka5z8wxh02fj1io05ee5ria4',
+            center: [4.8962943, 52.3656603],
+            zoom: 13,
+            transformRequest: transformRequest
+        });
+
+        const geocoder = new MapboxGeocoder({
+            accessToken: mapboxgl.accessToken,
+            mapboxgl: mapboxgl
+        });
+
+        map.addControl(geocoder, "top-right");
+
+        const getIso = function () {
+
+            // Concatenate the request
+            let request = `${isoUrl}/${profile}/${coords}.json?contours_minutes=${minutes}&polygons=true&access_token=${mapboxgl.accessToken}`;
+
+            // Make the request, then do the things
+            fetch(request).then(res => res.json()).then(res => {
+                map.getSource("iso").setData(res);
+
+                const selected = turf.pointsWithinPolygon(points, res);
+                map.getSource("selection").setData(selected);
+
+                const selectionCount = selected.features.length;
+                console.log(`Number of points within ${minutes} minutes ${profile} of ${coords}: ${selectionCount}`);
+            });
+
+        };
+
+        map.on("load", () => {
+            // Add source and layer for the isochrone
+            map.addSource("iso", {
+                type: "geojson",
+                data: {
+                    type: "FeatureCollection",
+                    features: [
+                    ]
+                }
+            });
+
+            map.addLayer({
+                "id": "isoLayer",
+                "type": "fill",
+                "source": "iso",
+                "layout": {},
+                "paint": {
+                    "fill-color": "red",
+                    "fill-opacity": 0.4
+                }
+            }, "poi-label");
+
+            // Add source and layer for the point data
+            map.addSource("points", {
+                type: "geojson",
+                data: {
+                    type: "FeatureCollection",
+                    features: [
+                    ]
+                }
+            });
+
+            map.addLayer({
+                "id": "pointsLayer",
+                "type": "circle",
+                "source": "points",
+                "layout": {},
+                "paint": {
+                    "circle-color": "blue",
+                }
+            }, "poi-label");
+
+            // Add source and layer for the selected point data
+            map.addSource("selection", {
+                type: "geojson",
+                data: {
+                    type: "FeatureCollection",
+                    features: [
+                    ]
+                }
+            });
+
+            map.addLayer({
+                "id": "selectionLayer",
+                "type": "circle",
+                "source": "selection",
+                "layout": {},
+                "paint": {
+                    "circle-color": "purple",
+                }
+            });
+
+            // Do this when the geocoder returns a result
+            geocoder.on("result", ev => {
+                coords = ev.result.geometry.coordinates.join(",");
+                console.log(coords);
+                getIso();
+            });
+
+            // Fetch the point geojson and set it to a map layer source
+            fetch(pointsUrl).then(res => res.json()).then(res => {
+                points = res;
+                map.getSource("points").setData(points);
+            });
+
+            getIso();
+
+        });
+    </script>
+
+</body>
+
+</html>
