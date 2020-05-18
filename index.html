@@ -45,7 +45,7 @@
         const isoUrl = "https://api.mapbox.com/isochrone/v1/mapbox";
         const profile = "walking";
         const minutes = "10";
-        let coords = '35.7041, 139.5802'
+        let coords = '139.5802, 35.7041'
 
         const pointsUrl = "./amsterdam_coffee.geojson"
         let points = {}
@@ -53,7 +53,7 @@
         const map = new mapboxgl.Map({
             container: 'map',
             style: 'mapbox://styles/nonoumasy/cka5z8wxh02fj1io05ee5ria4',
-            center: [35.7041, 139.5802],
+            center: [139.5802, 35.7041],
             zoom: 12,
             transformRequest: transformRequest
         });
