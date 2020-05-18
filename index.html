@@ -74,14 +74,14 @@
         var map = new mapboxgl.Map({
             container: 'map', // Specify the container ID
             style: 'mapbox://styles/nonoumasy/cka5z8wxh02fj1io05ee5ria4', // Specify which map style to use
-            center: [52.3667, 4.8945], // Specify the starting position
+            center: [4.8945, 52.3667], // Specify the starting position
             zoom: 11.5, // Specify the starting zoom
         });
 
         // Create variables to use in getIso()
         var urlBase = 'https://api.mapbox.com/isochrone/v1/mapbox/';
-        var lon = 52.3667;
-        var lat = 4.8945;
+        var lon = 4.8945;
+        var lat = 52.3667;
         var profile = 'walking';
         var minutes = 10;
 
