@@ -76,14 +76,14 @@
         var map = new mapboxgl.Map({
             container: 'map', // Specify the container ID
             style: 'mapbox://styles/nonoumasy/cka5z8wxh02fj1io05ee5ria4', // Specify which map style to use
-            center: [4.8973076, 52.3655578], // Specify the starting position
+            center: [4.8979848, 52.3655128], // Specify the starting position
             zoom: 11.5, // Specify the starting zoom
         });
 
         // Create variables to use in getIso()
         var urlBase = 'https://api.mapbox.com/isochrone/v1/mapbox/';
-        var lon = 4.8973076;
-        var lat = 52.3655578;
+        var lon = 4.8979848;
+        var lat = 52.3655128;
         var profile = 'cycling';
         var minutes = 10;
 
@@ -154,7 +154,7 @@
                                     properties: {},
                                     geometry: {
                                         type: "Point",
-                                        coordinates: [4.8973076, 52.3655578]
+                                        coordinates: [4.8979848, 52.3655128]
                                     }
                                 }
                             ]
