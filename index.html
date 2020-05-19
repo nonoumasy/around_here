@@ -26,6 +26,7 @@
             bottom: 0;
             width: 100%;
         }
+        
     </style>
 </head>
 
@@ -99,7 +100,8 @@
         };
 
         var marker = new mapboxgl.Marker({
-            'color': '#314ccd'
+            'url': 'mapbox-icon.svg',
+            'color': '#0C3B7C',
         });
 
         // Create a LngLat object to use in the marker initialization
@@ -132,8 +134,38 @@
                 }
             }, "poi-label");
 
+            /* Image: An image is loaded and added to the map. */
+            map.loadImage("./booking.png", function (error, image) {
+                if (error) throw error;
+                map.addImage("custom-marker", image);
+                /* Style layer: A style layer ties together the source and image and specifies how they are displayed on the map. */
+                map.addLayer({
+                    id: "markers",
+                    type: "symbol",
+                    /* Source: A data source specifies the geographic coordinate where the image marker gets placed. */
+                    source: {
+                        type: "geojson",
+                        data: {
+                            type: 'FeatureCollection',
+                            features: [
+                                {
+                                    type: 'Feature',
+                                    properties: {},
+                                    geometry: {
+                                        type: "Point",
+                                        coordinates: [4.8945, 52.3667]
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    layout: {
+                        "icon-image": "custom-marker",
+                    }
+                });
+            })
             // Initialize the marker at the query coordinates
-            marker.setLngLat(lngLat).addTo(map);
+            // marker.setLngLat(lngLat).addTo(map);
 
             // Make the API call
             getIso();

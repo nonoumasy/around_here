@@ -1,4 +1,4 @@
-.marker {
+.mapboxgl-marker {
   background-image: url('booking.png');
   background-size: cover;
   width: 40px;
