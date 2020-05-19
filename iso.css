@@ -1,8 +1,0 @@
-.mapboxgl-marker {
-  background-image: url('booking.png');
-  background-size: cover;
-  width: 40px;
-  height: 40px;
-  border-radius: 0%;
-  cursor: pointer;
-}
