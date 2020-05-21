@@ -87,7 +87,7 @@
         const isoUrl = "https://api.mapbox.com/isochrone/v1/mapbox";
         let profile = "driving";
         let minutes = "15";
-        let coords = "-90.257765,38.627139";
+        let coords = "4.898506,52.365503";
 
         const pointsUrl = "https://gist.githubusercontent.com/jbranigan/f01464d691d39e59bdbf2a4e3d61d7b7/raw/e92e84fc03189830bd45802138edea2a41b4e5f6/hospitals.geojson";
         let points = {};
@@ -95,8 +95,8 @@
         const map = new mapboxgl.Map({
             container: 'map',
             style: 'mapbox://styles/mapbox/streets-v11',
-            center: [-90.257765, 38.627139],
-            zoom: 10,
+            center: [4.898506, 52.365503],
+            zoom: 12,
             transformRequest: transformRequest
         });
 
@@ -216,7 +216,8 @@
                 map.getSource("points").setData(points);
             });
 
-
+            // Initialize the marker at the query coordinates
+            marker.setLngLat(coords).addTo(map);
 
             getIso();
 

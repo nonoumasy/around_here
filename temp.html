@@ -140,7 +140,13 @@
 
         };
 
+        var marker = new mapboxgl.Marker({
+                'color': '#314ccd'
+            })
+
+
         map.on("load", () => {
+            
             // Add source and layer for the isochrone
             map.addSource("iso", {
                 type: "geojson",
@@ -216,6 +222,8 @@
                 map.getSource("points").setData(points);
             });
 
+            // Initialize the marker at the query coordinates
+            // marker.setLngLat(coords).addTo(map);
             
 
             getIso();
