@@ -91,6 +91,10 @@
                 zoom: 13,
                 transformRequest: transformRequest
             });
+        
+        const marker = new mapboxgl.Marker({
+                'color': '#314ccd'
+            });
 
         //
         const isoUrl = "https://api.mapbox.com/isochrone/v1/mapbox";
@@ -143,6 +147,10 @@
         };
 
         map.on("load", () => {
+
+            // Initialize the marker at the query coordinates
+            marker.setLngLat(coords).addTo(map);
+
             // Add source and layer for the isochrone
             map.addSource("iso", {
                 type: "geojson",
