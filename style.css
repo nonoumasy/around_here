@@ -9,3 +9,8 @@ body {
   bottom: 0;
   width: 100%;
 }
+
+  #isoBorder {
+    border-style: dotted;
+    color: 'blue'
+  }

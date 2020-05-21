@@ -7,24 +7,12 @@
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
     <script src="https://api.mapbox.com/mapbox-gl-js/v1.10.0/mapbox-gl.js"></script>
     <link href="https://api.mapbox.com/mapbox-gl-js/v1.10.0/mapbox-gl.css" rel="stylesheet" />
+    <link href='style.css' rel='stylesheet' />
     <!-- Import Assembly -->
     <link href='https://api.mapbox.com/mapbox-assembly/v0.23.2/assembly.min.css' rel='stylesheet'>
     <script src='https://api.mapbox.com/mapbox-assembly/v0.23.2/assembly.js'></script>
     <!-- Import jQuery -->
     <script src='https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js'></script>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-        }
-
-        #map {
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            width: 100%;
-        }
-    </style>
 </head>
 
 <body>
@@ -174,7 +162,8 @@
                 "layout": {},
                 "paint": {
                     'line-color': '#191925',
-                    'line-width': 4
+                    'line-width': 3,
+                    'line-dasharray': [4, 2]
                 }
             }, "poi-label");
 
