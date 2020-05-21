@@ -3,7 +3,7 @@
 
 <head>
     <meta charset='utf-8' />
-    <title>Get started with the Isochrone API</title>
+    <title>Isochrone Mapping</title>
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
     <!-- Import Mapbox GL JS  -->
     <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.10.0/mapbox-gl.js'></script>
@@ -11,24 +11,10 @@
     <!-- Import Assembly -->
     <link href='https://api.mapbox.com/mapbox-assembly/v0.23.2/assembly.min.css' rel='stylesheet'>
     <script src='https://api.mapbox.com/mapbox-assembly/v0.23.2/assembly.js'> </script>
-    <link rel="stylesheet" type="text/css" href="./style.css">
+
+    <link href="./style.css" rel="stylesheet" type='text/css' />
     <!-- Import jQuery -->
     <script src='https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js'></script>
-
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-        }
-
-        #map {
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            width: 100%;
-        }
-        
-    </style>
 </head>
 
 <body>
@@ -72,7 +58,7 @@
 
     <script>
         // Add your Mapbox access token
-        mapboxgl.accessToken = 'pk.eyJ1Ijoibm9ub3VtYXN5IiwiYSI6ImNrMTBmY3MycTA1YTEzY3F3ZHZ3eHNsdTAifQ.7r-ppKeBALXFid9Vmpa9Pw';
+        mapboxgl.accessToken = 'pk.eyJ1Ijoibm9ub3VtYXN5IiwiYSI6ImNrYTdtcGQwYTAzOGgycnBwc2F0dHdzdjYifQ.EzZeVp9SKvaRaCZm-i8JLg';
         var map = new mapboxgl.Map({
             container: 'map', // Specify the container ID
             style: 'mapbox://styles/nonoumasy/cka5z8wxh02fj1io05ee5ria4', // Specify which map style to use
@@ -130,8 +116,9 @@
                 'layout': {},
                 'paint': {
                     // The fill color for the layer is set to a light purple
-                    'fill-color': '#5a3fc0',
-                    'fill-opacity': 0.3
+                    'fill-color': 'red',
+                    'fill-opacity': 0.5,
+                    // 'fill-outline-color': 1
                 }
             }, "poi-label");
 
