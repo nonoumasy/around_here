@@ -85,8 +85,8 @@
         }
 
         const isoUrl = "https://api.mapbox.com/isochrone/v1/mapbox";
-        const profile = "driving";
-        const minutes = "15";
+        let profile = "driving";
+        let minutes = "15";
         let coords = "-90.257765,38.627139";
 
         const pointsUrl = "https://gist.githubusercontent.com/jbranigan/f01464d691d39e59bdbf2a4e3d61d7b7/raw/e92e84fc03189830bd45802138edea2a41b4e5f6/hospitals.geojson";
@@ -107,6 +107,20 @@
 
         map.addControl(geocoder, "top-right");
 
+        // Target the "params" form in the HTML portion of your code
+        var params = document.getElementById('params');
+
+        // When a user changes the value of profile or duration by clicking a button, change the parameter's value and make the API query again
+        params.addEventListener('change', function (e) {
+            if (e.target.name === 'profile') {
+                profile = e.target.value;
+                getIso();
+            } else if (e.target.name === 'duration') {
+                minutes = e.target.value;
+                getIso();
+            }
+        });
+
         const getIso = function () {
 
             // Concatenate the request
@@ -122,8 +136,6 @@
                 const selectionCount = selected.features.length;
                 console.log(`Number of points within ${minutes} minutes ${profile} of ${coords}: ${selectionCount}`);
 
-                // Set the 'iso' source's data to what's returned by the API query
-                // map.getSource('iso').setData(data);
             });
 
         };
@@ -210,19 +222,7 @@
 
         });
     
-    // Target the "params" form in the HTML portion of your code
-    var params = document.getElementById('params');
-
-    // When a user changes the value of profile or duration by clicking a button, change the parameter's value and make the API query again
-    params.addEventListener('change', function (e) {
-        if (e.target.name === 'profile') {
-            profile = e.target.value;
-            getIso();
-        } else if (e.target.name === 'duration') {
-            minutes = e.target.value;
-            getIso();
-        }
-    });
+    
         
     </script>
 
