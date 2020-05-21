@@ -84,21 +84,23 @@
             }
         }
 
+        const map = new mapboxgl.Map({
+                container: 'map',
+                style: 'mapbox://styles/mapbox/streets-v11',
+                center: [4.898506, 52.365503],
+                zoom: 13,
+                transformRequest: transformRequest
+            });
+
+        //
         const isoUrl = "https://api.mapbox.com/isochrone/v1/mapbox";
-        let profile = "driving";
-        let minutes = "15";
-        let coords = "4.898506,52.365503";
+        let profile = "cycling";
+        let minutes = "10";
+        let coords = "4.898506, 52.365503"; 
 
         const pointsUrl = "https://gist.githubusercontent.com/jbranigan/f01464d691d39e59bdbf2a4e3d61d7b7/raw/e92e84fc03189830bd45802138edea2a41b4e5f6/hospitals.geojson";
         let points = {};
 
-        const map = new mapboxgl.Map({
-            container: 'map',
-            style: 'mapbox://styles/mapbox/streets-v11',
-            center: [4.898506, 52.365503],
-            zoom: 12,
-            transformRequest: transformRequest
-        });
 
         const geocoder = new MapboxGeocoder({
             accessToken: mapboxgl.accessToken,
@@ -162,7 +164,6 @@
             }, "poi-label");
 
 
-
             // Add source and layer for the point data
             map.addSource("points", {
                 type: "geojson",
@@ -206,7 +207,7 @@
             // Do this when the geocoder returns a result
             geocoder.on("result", ev => {
                 coords = ev.result.geometry.coordinates.join(",");
-                console.log(coords);
+                // console.log(coords);
                 getIso();
             });
 
@@ -217,7 +218,7 @@
             });
 
             // Initialize the marker at the query coordinates
-            marker.setLngLat(coords).addTo(map);
+            // marker.setLngLat(coords).addTo(map);
 
             getIso();
 
