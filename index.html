@@ -136,7 +136,7 @@
             // Concatenate the request
             let request = `${isoUrl}/${profile}/${coords}.json?contours_minutes=${minutes}&polygons=true&access_token=${mapboxgl.accessToken}`
 
-            const pointsUrl = `https://api.mapbox.com/geocoding/v5/mapbox.places/${amenity}.json?proximity=${coords}&access_token=${mapboxgl.accessToken}`
+            let pointsUrl = `https://api.mapbox.com/geocoding/v5/mapbox.places/${amenity}.json?proximity=${coords}&access_token=${mapboxgl.accessToken}&limit=10`
 
             // Make the request, then do the things
             fetch(request).then(res => res.json()).then(res => {
@@ -151,13 +151,13 @@
                 }
                 map.getSource("points").setData(points)
             })
+            console.log('this is the res' + res)
+            
+            let selected = turf.pointsWithinPolygon(points, res);
+            map.getSource("selection").setData(selected);
 
-
-            // let selected = turf.pointsWithinPolygon(points, res)
-            // map.getSource("selection").setData(selected)
-
-            // const selectionCount = selected.features.length;
-            // console.log(`Number of points within ${minutes} minutes ${profile} of ${coords}: ${selectionCount}`)
+            const selectionCount = selected.features.length;
+            console.log(`Number of points within ${minutes} minutes ${profile} of ${coords}: ${selectionCount}`);
         }
 
 
@@ -244,7 +244,7 @@
         // Do this when the geocoder returns a result
         geocoder.on("result", ev => {
             coords = ev.result.geometry.coordinates.join(",")
-            console.log(coords)
+
             getIso()
         })
 
