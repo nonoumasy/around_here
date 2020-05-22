@@ -16,15 +16,13 @@
 </head>
 
 <body>
-
-    <div id="map"></div>
-
-    <script
-        src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.min.js"></script>
+    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.min.js"></script>
     <link rel="stylesheet"
         href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.css"
         type="text/css" />
     <script src="https://unpkg.com/@turf/turf/turf.min.js"></script>
+
+    <div id="map"></div>
 
     <div class='absolute fl my36 mx36 py36 px36 bg-gray-faint round'>
         <form id='params'>
@@ -61,23 +59,22 @@
             <h4 class='txt-m txt-bold mb6'>Choose an amenity:</h4>
             <div class='mb12 mr12 toggle-group align-center'>
                 <label class='toggle-container'>
-                    <input name='amenity' type='radio' value='coffee' checked>
-                    <div class='toggle toggle--active-null toggle--null'>Coffee</div>
+                    <input name='amenity' type='radio' value='cafe' checked>
+                    <div class='toggle toggle--active-null toggle--null'>Cafes</div>
                 </label>
                 <label class='toggle-container'>
                     <input name='amenity' type='radio' value='restaurant'>
-                    <div class='toggle toggle--active-null toggle--null'>Restaurant</div>
+                    <div class='toggle toggle--active-null toggle--null'>Restaurants</div>
                 </label>
                 <label class='toggle-container'>
                     <input name='amenity' type='radio' value='bar'>
-                    <div class='toggle toggle--active-null toggle--null'>Bar</div>
+                    <div class='toggle toggle--active-null toggle--null'>Bars</div>
                 </label>
             </div>
         </form>
     </div>
 
-
-
+    
     <script>
         mapboxgl.accessToken = 'pk.eyJ1Ijoibm9ub3VtYXN5IiwiYSI6ImNrYTdtcGQwYTAzOGgycnBwc2F0dHdzdjYifQ.EzZeVp9SKvaRaCZm-i8JLg';
 
@@ -101,7 +98,7 @@
         const isoUrl = "https://api.mapbox.com/isochrone/v1/mapbox";
         let profile = "walking";
         let minutes = "10";
-        let amenity = "Coffee";
+        let amenity = "cafe";
         let coords = "4.898506, 52.365503";
         // let LngLat = coords
 
@@ -109,8 +106,10 @@
 
         const geocoder = new MapboxGeocoder({
             accessToken: mapboxgl.accessToken,
-            mapboxgl: mapboxgl
-        });
+            mapboxgl: mapboxgl,
+            placeholder: 'Enter Booking Address'
+            
+        })
 
         //
         map.addControl(geocoder, "top-right");
@@ -155,11 +154,11 @@
                 map.getSource("selection").setData(selected);
 
                 const selectionCount = selected.features.length;
-                console.log(`Number of points within ${minutes} minutes ${profile} of ${coords}: ${selectionCount}`);
+                const message = `Number of ${amenity}s within ${minutes} minutes ${profile} of ${coords}: ${selectionCount}`
+                document.getElementById("myText").innerHTML = message;
             })
 
         }
-
 
         map.on("load", () => {
 
@@ -198,7 +197,6 @@
                 }
             }, "poi-label")
 
-
             // Add source and layer for the point data
             map.addSource("points", {
                 type: "geojson",
@@ -210,6 +208,7 @@
 
             map.addLayer({
                 "id": "pointsLayer",
+                "interactive": true,
                 "type": "circle",
                 "source": "points",
                 "layout": {},
@@ -241,18 +240,18 @@
                 }
             });
 
-        // Do this when the geocoder returns a result
-        geocoder.on("result", ev => {
-            coords = ev.result.geometry.coordinates.join(",")
+            // Do this when the geocoder returns a result
+            geocoder.on("result", ev => {
+                coords = ev.result.geometry.coordinates.join(",")
+
+                getIso()
+            })
 
             getIso()
-        })
-
-        getIso()
 
         })
     </script>
-
+    <span id='myText'></span>
 </body>
 
 </html>

@@ -10,7 +10,14 @@ body {
   width: 100%;
 }
 
-  #isoBorder {
-    border-style: dotted;
-    color: 'blue';
-  }
+#isoBorder {
+  border-style: dotted;
+  color: 'blue';
+}
+
+#myText {
+  background-color: black;
+  color: white;
+  position: absolute;
+  padding:10
+}
