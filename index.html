@@ -61,15 +61,15 @@
             <h4 class='txt-m txt-bold mb6'>Choose an amenity:</h4>
             <div class='mb12 mr12 toggle-group align-center'>
                 <label class='toggle-container'>
-                    <input name='amenity' type='radio' value='Coffee' checked>
+                    <input name='amenity' type='radio' value='coffee' checked>
                     <div class='toggle toggle--active-null toggle--null'>Coffee</div>
                 </label>
                 <label class='toggle-container'>
-                    <input name='amenity' type='radio' value='CoWorking'>
-                    <div class='toggle toggle--active-null toggle--null'>CoWorking</div>
+                    <input name='amenity' type='radio' value='restaurant'>
+                    <div class='toggle toggle--active-null toggle--null'>Restaurant</div>
                 </label>
                 <label class='toggle-container'>
-                    <input name='amenity' type='radio' value='Bar'>
+                    <input name='amenity' type='radio' value='bar'>
                     <div class='toggle toggle--active-null toggle--null'>Bar</div>
                 </label>
             </div>
@@ -89,6 +89,8 @@
             }
         }
 
+        
+
         const map = new mapboxgl.Map({
             container: 'map',
             style: 'mapbox://styles/nonoumasy/cka5z8wxh02fj1io05ee5ria4',
@@ -103,6 +105,7 @@
         let minutes = "10";
         let amenity = "Coffee";
         let coords = "4.898506, 52.365503";
+        let LngLat = coords
 
         // const pointsUrl = "https://gist.githubusercontent.com/jbranigan/f01464d691d39e59bdbf2a4e3d61d7b7/raw/e92e84fc03189830bd45802138edea2a41b4e5f6/hospitals.geojson";
         let points = {};
@@ -132,31 +135,31 @@
             }
         })
         const getIso = function () {
-
             // Concatenate the request
-            let request = `${isoUrl}/${profile}/${coords}.json?contours_minutes=${minutes}&polygons=true&access_token=${mapboxgl.accessToken}`;
+            let request = `${isoUrl}/${profile}/${coords}.json?contours_minutes=${minutes}&polygons=true&access_token=${mapboxgl.accessToken}`
+
+            const pointsUrl = `https://api.mapbox.com/geocoding/v5/mapbox.places/${amenity}.json?proximity=${coords}&access_token=${mapboxgl.accessToken}`
 
             // Make the request, then do the things
             fetch(request).then(res => res.json()).then(res => {
                 map.getSource("iso").setData(res);
+            })
 
-                const selected = turf.pointsWithinPolygon(points, res);
-                map.getSource("selection").setData(selected);
+            // Fetch the point geojson and set it to a map layer source
+            fetch(pointsUrl).then(res => res.json()).then(res => {
+                points = res;
+                map.getSource("points").setData(points);
+            })
 
-                const selectionCount = selected.features.length;
-                console.log(`Number of points within ${minutes} minutes ${profile} of ${coords}: ${selectionCount}`);
-            
-                const pointsUrl = `https://api.mapbox.com/geocoding/v5/mapbox.places/${amenity}.json?proximity=${coords}&access_token=${mapboxgl.accessToken}`
+            const selected = turf.pointsWithinPolygon(points, res)
+            map.getSource("selection").setData(selected)
 
-                // Fetch the point geojson and set it to a map layer source
-                fetch(pointsUrl).then(res => res.json()).then(res => {
-                    points = res;
-                    map.getSource("points").setData(points);
-                })
+            const selectionCount = selected.features.length;
+            console.log(`Number of points within ${minutes} minutes ${profile} of ${coords}: ${selectionCount}`)
+        }
+                
 
-            });
 
-        };
 
         map.on("load", () => {
 
