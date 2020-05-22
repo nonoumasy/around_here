@@ -81,22 +81,20 @@
     <script>
         mapboxgl.accessToken = 'pk.eyJ1Ijoibm9ub3VtYXN5IiwiYSI6ImNrYTdtcGQwYTAzOGgycnBwc2F0dHdzdjYifQ.EzZeVp9SKvaRaCZm-i8JLg';
 
-        const transformRequest = (url) => {
-            const hasQuery = url.indexOf("?") !== -1;
-            const suffix = hasQuery ? "&pluginName=lunchboxIsochrones" : "?pluginName=lunchboxIsochrones";
-            return {
-                url: url + suffix
-            }
-        }
-
-        
+        // const transformRequest = (url) => {
+        //     const hasQuery = url.indexOf("?") !== -1;
+        //     const suffix = hasQuery ? "&pluginName=lunchboxIsochrones" : "?pluginName=lunchboxIsochrones";
+        //     return {
+        //         url: url + suffix
+        //     }
+        // }
 
         const map = new mapboxgl.Map({
             container: 'map',
             style: 'mapbox://styles/nonoumasy/cka5z8wxh02fj1io05ee5ria4',
             center: [4.898506, 52.365503],
             zoom: 13,
-            transformRequest: transformRequest
+            // transformRequest: transformRequest
         });
 
         //
@@ -105,17 +103,16 @@
         let minutes = "10";
         let amenity = "Coffee";
         let coords = "4.898506, 52.365503";
-        let LngLat = coords
+        // let LngLat = coords
 
-        // const pointsUrl = "https://gist.githubusercontent.com/jbranigan/f01464d691d39e59bdbf2a4e3d61d7b7/raw/e92e84fc03189830bd45802138edea2a41b4e5f6/hospitals.geojson";
-        let points = {};
-
+        let points = {}
 
         const geocoder = new MapboxGeocoder({
             accessToken: mapboxgl.accessToken,
             mapboxgl: mapboxgl
         });
 
+        //
         map.addControl(geocoder, "top-right");
 
         // Target the "params" form in the HTML portion of your code
@@ -134,6 +131,7 @@
                 getIso()
             }
         })
+
         const getIso = function () {
             // Concatenate the request
             let request = `${isoUrl}/${profile}/${coords}.json?contours_minutes=${minutes}&polygons=true&access_token=${mapboxgl.accessToken}`
@@ -147,18 +145,19 @@
 
             // Fetch the point geojson and set it to a map layer source
             fetch(pointsUrl).then(res => res.json()).then(res => {
-                points = res;
-                map.getSource("points").setData(points);
+                points = res
+                for (i = 0; i < points.features.length; i++) {
+                    console.log(points.features[i].place_name)
+                }
+                map.getSource("points").setData(points)
             })
 
-            const selected = turf.pointsWithinPolygon(points, res)
-            map.getSource("selection").setData(selected)
+            // let selected = turf.pointsWithinPolygon(points, res)
+            // map.getSource("selection").setData(selected)
 
-            const selectionCount = selected.features.length;
-            console.log(`Number of points within ${minutes} minutes ${profile} of ${coords}: ${selectionCount}`)
+            // const selectionCount = selected.features.length;
+            // console.log(`Number of points within ${minutes} minutes ${profile} of ${coords}: ${selectionCount}`)
         }
-                
-
 
 
         map.on("load", () => {
@@ -215,7 +214,10 @@
                 "source": "points",
                 "layout": {},
                 "paint": {
-                    "circle-color": "blue",
+                    'circle-radius': 5,
+                    'circle-color': 'white',
+                    'circle-stroke-color': 'black',
+                    'circle-stroke-width': 3,
                 }
             }, "poi-label");
 
@@ -235,26 +237,19 @@
                 "source": "selection",
                 "layout": {},
                 "paint": {
-                    "circle-color": "purple",
+                    'circle-color': 'purple',
                 }
             });
 
-            // Do this when the geocoder returns a result
-            geocoder.on("result", ev => {
-                coords = ev.result.geometry.coordinates.join(",");
-                // console.log(coords);
-                getIso();
-            })
-
-            const pointsUrl = `https://api.mapbox.com/geocoding/v5/mapbox.places/${amenity}.json?proximity=${coords}&access_token=${mapboxgl.accessToken}`
-
-            // Fetch the point geojson and set it to a map layer source
-            fetch(pointsUrl).then(res => res.json()).then(res => {
-                points = res;
-                map.getSource("points").setData(points);
-            })
-
+        // Do this when the geocoder returns a result
+        geocoder.on("result", ev => {
+            coords = ev.result.geometry.coordinates.join(",")
+            console.log(coords)
             getIso()
+        })
+
+        getIso()
+
         })
     </script>
 
