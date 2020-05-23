@@ -80,31 +80,32 @@
     <script>
         mapboxgl.accessToken = 'pk.eyJ1Ijoibm9ub3VtYXN5IiwiYSI6ImNrYTdtcGQwYTAzOGgycnBwc2F0dHdzdjYifQ.EzZeVp9SKvaRaCZm-i8JLg';
 
-        // const transformRequest = (url) => {
-        //     const hasQuery = url.indexOf("?") !== -1;
-        //     const suffix = hasQuery ? "&pluginName=lunchboxIsochrones" : "?pluginName=lunchboxIsochrones";
-        //     return {
-        //         url: url + suffix
-        //     }
-        // }
+        // Declare some variables
+        const isoUrl = "https://api.mapbox.com/isochrone/v1/mapbox"
+        let profile = "walking"
+        let minutes = "10"
+        let amenity = "cafe"
+        let lat = "4.898506"
+        let lon = "52.365503"
+        let coords = (lat + ',' + lon)
+        // let coords = "4.898506, 52.365503"
+        // let LngLat = coords
+
 
         const map = new mapboxgl.Map({
             container: 'map',
             style: 'mapbox://styles/nonoumasy/cka5z8wxh02fj1io05ee5ria4',
-            center: [4.898506, 52.365503],
+            center: [Number(lat), Number(lon)],
             zoom: 13,
-            // transformRequest: transformRequest
-        });
+        })
 
-        //
-        const isoUrl = "https://api.mapbox.com/isochrone/v1/mapbox";
-        let profile = "walking";
-        let minutes = "10";
-        let amenity = "cafe";
-        let coords = "4.898506, 52.365503";
-        // let LngLat = coords
 
-        let points = {}
+        //add marker
+        var marker = new mapboxgl.Marker()
+            .setLngLat([Number(lat), Number(lon)])
+            .addTo(map);
+
+        let points = []
 
         const geocoder = new MapboxGeocoder({
             accessToken: mapboxgl.accessToken,
@@ -137,10 +138,13 @@
             // Concatenate the request
             let request = `${isoUrl}/${profile}/${coords}.json?contours_minutes=${minutes}&polygons=true&access_token=${mapboxgl.accessToken}`
 
-            let pointsUrl = `https://api.mapbox.com/geocoding/v5/mapbox.places/${amenity}.json?proximity=${coords}&access_token=${mapboxgl.accessToken}&limit=10    `
+            let pointsUrl = `https://api.mapbox.com/geocoding/v5/mapbox.places/${amenity}.json?proximity=${coords}&access_token=${mapboxgl.accessToken}&limit=10`
+
+            // let pointsUrl = `https://overpass-api.de/api/interpreter?data=%5Bout:json%5D;node%2852,4,53,5%29%5Bamenity=cafe%5D;out%20meta;`
 
             // Fetch the point geojson and set it to a map layer source
-            fetch(pointsUrl).then(res => res.json())
+            fetch(pointsUrl)
+                .then(res => res.json())
                 .then(res => {
                     points = res
                     map.getSource("points").setData(points)
@@ -158,13 +162,9 @@
                     const message = `Number of ${amenity}s within ${minutes} minutes ${profile} of ${coords}: ${selectionCount}`
                     document.getElementById("output").innerHTML = message;
                 })
-
         }
 
         map.on("load", () => {
-
-            // Initialize the marker at the query coordinates
-            // marker.setLngLat(lngLat).addTo(map);
 
             // Add source and layer for the isochrone
             map.addSource("iso", {
@@ -258,8 +258,9 @@
 
                 new mapboxgl.Popup()
                     .setLngLat(coordinates)
-                    .setHTML(  `<h2>${name}</h2>
+                    .setHTML(`<h2>${name}</h2>
                         <ul>
+                        <li>Name: ${name}</li>
                         <li>Address: ${address}</li>
                         <li>Category: ${category}</li>
                     </ul>`)
@@ -279,7 +280,7 @@
             // Do this when the geocoder returns a result
             geocoder.on("result", ev => {
                 coords = ev.result.geometry.coordinates.join(",")
-
+                marker.remove();
                 getIso()
             })
 
