@@ -15,9 +15,9 @@ body {
   color: 'blue';
 }
 
-#myText {
-  background-color: black;
-  color: white;
+#output {
+  background-color: white;
+  color: black;
   position: absolute;
   padding:10
 }
