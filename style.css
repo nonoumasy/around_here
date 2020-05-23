@@ -1,23 +1,26 @@
-body {
-  margin: 0;
-  padding: 0;
+body { 
+    margin: 0; 
+    padding: 0; 
 }
 
-#map {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 100%;
-}
-
-#isoBorder {
-  border-style: dotted;
-  color: 'blue';
+#map { 
+    position: absolute; 
+    top: 0; 
+    bottom: 0; 
+    width: 100%; 
 }
 
 #output {
-  background-color: white;
-  color: black;
-  position: absolute;
-  padding:10
+    background-color: white;
+    color: black;
+    position: absolute;
 }
+
+.mapboxgl-popup {
+
+}
+
+.mapboxgl-popup-close-button {
+    display: none;
+}
+

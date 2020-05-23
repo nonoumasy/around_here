@@ -5,21 +5,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
     <button id="getText">Get Text</button>
+    <button id="getData">Get Data</button>
     <div id="output"></div>
-    <script>
-        document.getElementById('getText').addEventListener('click', getText)
-
-        function getText() {
-            fetch('sample.txt')
-                .then((res) => res.text())
-                .then((data) => {
-                    document.getElementById('output').innerHTML = data
-                })
-        }
+    <p>test</p>
+    <div id="template">sdfasdlfjdlsafj</div>
 
 
     </script>
