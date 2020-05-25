@@ -95,7 +95,7 @@
             container: 'map',
             style: 'mapbox://styles/nonoumasy/cka5z8wxh02fj1io05ee5ria4',
             center: [4.898506, 52.365503],
-            zoom: 13,
+            zoom: 14,
         })
 
 
@@ -179,6 +179,7 @@
             // Add source and layer for the isochrone
             map.addSource("iso", {
                 type: "geojson",
+                buffer: 0,
                 data: {
                     type: "FeatureCollection",
                     features: []
@@ -211,6 +212,7 @@
             // Add source and layer for the point data
             map.addSource("points", {
                 type: "geojson",
+                buffer: 0,
                 data: {
                     type: "FeatureCollection",
                     features: []
@@ -224,7 +226,7 @@
                 "source": "points",
                 "layout": {},
                 "paint": {
-                    'circle-radius': 5,
+                    'circle-radius': 4,
                     'circle-color': 'white',
                     'circle-stroke-color': 'black',
                     'circle-stroke-width': 3,
@@ -247,7 +249,11 @@
                 "source": "selection",
                 "layout": {},
                 "paint": {
+                    'circle-radius': 4,
                     'circle-color': 'orange',
+                    'circle-stroke-color': 'black',
+                    'circle-stroke-width': 3,
+
                 }
             });
 
