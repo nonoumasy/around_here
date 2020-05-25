@@ -13,6 +13,8 @@
     <script src='https://api.mapbox.com/mapbox-assembly/v0.23.2/assembly.js'></script>
     <!-- Import jQuery -->
     <script src='https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js'></script>
+    <!-- osmtogeojson -->
+    <script src='osmtogeojson.js'></script>
 </head>
 
 <body>
@@ -85,24 +87,21 @@
         let profile = "walking"
         let minutes = "10"
         let amenity = "cafe"
-        let lat = "4.898506"
-        let lon = "52.365503"
-        let coords = (lat + ',' + lon)
-        // let coords = "4.898506, 52.365503"
+        let coords = "4.898506,52.365503"
         // let LngLat = coords
 
 
         const map = new mapboxgl.Map({
             container: 'map',
             style: 'mapbox://styles/nonoumasy/cka5z8wxh02fj1io05ee5ria4',
-            center: [Number(lat), Number(lon)],
+            center: [4.898506, 52.365503],
             zoom: 13,
         })
 
 
         //add marker
         var marker = new mapboxgl.Marker()
-            .setLngLat([Number(lat), Number(lon)])
+            .setLngLat([4.898506, 52.365503])
             .addTo(map);
 
         let points = []
@@ -138,15 +137,26 @@
             // Concatenate the request
             let request = `${isoUrl}/${profile}/${coords}.json?contours_minutes=${minutes}&polygons=true&access_token=${mapboxgl.accessToken}`
 
-            let pointsUrl = `https://api.mapbox.com/geocoding/v5/mapbox.places/${amenity}.json?proximity=${coords}&access_token=${mapboxgl.accessToken}&limit=10`
+            // let pointsUrl = `https://api.mapbox.com/geocoding/v5/mapbox.places/${amenity}.json?proximity=${coords}&access_token=${mapboxgl.accessToken}&limit=10`
 
-            // let pointsUrl = `https://overpass-api.de/api/interpreter?data=%5Bout:json%5D;node%2852,4,53,5%29%5Bamenity=cafe%5D;out%20meta;`
+            // let pointsUrl = https://www.overpass-api.de/api/interpreter?data=[out:json];node[highway=speed_camera](43.46669501043081,-5.708215989569187,43.588927989569186,-5.605835010430813);out%20meta;
+
+            let lat = coords.split(',')[0]
+            let lon = coords.split(',')[1]
+
+            let loc1 = Number(lon) - 0.2
+            let loc2 = Number(lat) - 0.2
+            let loc3 = Number(lon) + 0.2
+            let loc4 = Number(lat) + 0.2
+            
+            let pointsUrl = `https://www.overpass-api.de/api/interpreter?data=[out:json];node[amenity=${amenity}](${loc1}, ${loc2}, ${loc3}, ${loc3});out%20meta;`
 
             // Fetch the point geojson and set it to a map layer source
             fetch(pointsUrl)
-                .then(res => res.json())
-                .then(res => {
-                    points = res
+                .then( res => res.json())
+                .then( res => {
+                    const data = osmtogeojson(res)
+                    points = data
                     map.getSource("points").setData(points)
                 })
 
@@ -245,9 +255,9 @@
             // location of the feature, with description HTML from its properties.
             map.on('click', 'pointsLayer', function (e) {
                 let coordinates = e.features[0].geometry.coordinates.slice()
-                let name = e.features[0].matching_text
-                let address = e.features[0].properties.address
-                let category = e.features[0].properties.category
+                let name = e.features[0].properties.name
+                let address = e.features[0].properties['addr:housenumber'] + ' ' + e.features[0].properties['addr:street']
+                let category = e.features[0].properties.amenity
 
                 // Ensure that if the map is zoomed out such that multiple
                 // copies of the feature are visible, the popup appears
