@@ -133,7 +133,7 @@
             }
         })
 
-        const getIso = function () {
+        const getIso = async function () {
             // Concatenate the request
             let request = `${isoUrl}/${profile}/${coords}.json?contours_minutes=${minutes}&polygons=true&access_token=${mapboxgl.accessToken}`
 
@@ -152,7 +152,7 @@
             let pointsUrl = `https://www.overpass-api.de/api/interpreter?data=[out:json];node[amenity=${amenity}](${loc1}, ${loc2}, ${loc3}, ${loc4});out%20meta;`
 
             // Fetch the point geojson and set it to a map layer source
-            fetch(pointsUrl)
+            await fetch(pointsUrl)
                 .then( res => res.json())
                 .then( res => {
                     const data = osmtogeojson(res)
