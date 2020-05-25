@@ -87,21 +87,21 @@
         let profile = "walking"
         let minutes = "10"
         let amenity = "cafe"
-        let coords = "4.898506,52.365503"
+        let coords = "4.8985,52.3655"
         // let LngLat = coords
 
 
         const map = new mapboxgl.Map({
             container: 'map',
             style: 'mapbox://styles/nonoumasy/cka5z8wxh02fj1io05ee5ria4',
-            center: [4.898506, 52.365503],
+            center: [4.8985,52.3655],
             zoom: 12,
         })
 
 
         //add marker
         var marker = new mapboxgl.Marker()
-            .setLngLat([4.898506, 52.365503])
+            .setLngLat([4.8985,52.3655])
             .addTo(map);
 
         let points = []
@@ -149,7 +149,7 @@
             let loc3 = Number(lon) + 0.2
             let loc4 = Number(lat) + 0.2
             
-            let pointsUrl = `https://www.overpass-api.de/api/interpreter?data=[out:json];node[amenity=${amenity}](${loc1}, ${loc2}, ${loc3}, ${loc4});out%20meta;`
+            let pointsUrl = `https://www.overpass-api.de/api/interpreter?data=[out:json];node[amenity=${amenity}](${loc1.toFixed(4)}, ${loc2.toFixed(4)}, ${loc3.toFixed(4)}, ${loc4.toFixed(4)});out%20meta;`
 
             // Fetch the point geojson and set it to a map layer source
             await fetch(pointsUrl)
@@ -179,7 +179,6 @@
             // Add source and layer for the isochrone
             map.addSource("iso", {
                 type: "geojson",
-                buffer: 0,
                 data: {
                     type: "FeatureCollection",
                     features: []
