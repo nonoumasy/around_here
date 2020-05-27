@@ -3,11 +3,12 @@
 
 <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>What's Around Here?</title>
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
     <script src="https://api.mapbox.com/mapbox-gl-js/v1.10.0/mapbox-gl.js"></script>
     <link href="https://api.mapbox.com/mapbox-gl-js/v1.10.0/mapbox-gl.css" rel="stylesheet" />
-    <link href='style.css' rel='stylesheet' />
+    <!-- <link href='style.css' rel='stylesheet' /> -->
     <!-- Import Assembly -->
     <link href='https://api.mapbox.com/mapbox-assembly/v0.23.2/assembly.min.css' rel='stylesheet'>
     <script src='https://api.mapbox.com/mapbox-assembly/v0.23.2/assembly.js'></script>
@@ -15,6 +16,31 @@
     <script src='https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js'></script>
     <!-- osmtogeojson -->
     <script src='osmtogeojson.js'></script>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+
+        #map {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+        }
+
+        #output {
+            background-color: white;
+            color: black;
+            position: absolute;
+        }
+
+        .mapboxgl-popup-close-button {
+            display: none;
+        }
+    </style>
 </head>
 
 <body>
@@ -94,14 +120,14 @@
         const map = new mapboxgl.Map({
             container: 'map',
             style: 'mapbox://styles/nonoumasy/cka5z8wxh02fj1io05ee5ria4',
-            center: [4.8985,52.3655],
+            center: [4.8985, 52.3655],
             zoom: 12,
         })
 
 
         //add marker
         var marker = new mapboxgl.Marker()
-            .setLngLat([4.8985,52.3655])
+            .setLngLat([4.8985, 52.3655])
             .addTo(map);
 
         let points = []
@@ -137,10 +163,6 @@
             // Concatenate the request
             let request = `${isoUrl}/${profile}/${coords}.json?contours_minutes=${minutes}&polygons=true&access_token=${mapboxgl.accessToken}`
 
-            // let pointsUrl = `https://api.mapbox.com/geocoding/v5/mapbox.places/${amenity}.json?proximity=${coords}&access_token=${mapboxgl.accessToken}&limit=10`
-
-            // let pointsUrl = https://www.overpass-api.de/api/interpreter?data=[out:json];node[highway=speed_camera](43.46669501043081,-5.708215989569187,43.588927989569186,-5.605835010430813);out%20meta;
-
             let lat = coords.split(',')[0]
             let lon = coords.split(',')[1]
 
@@ -148,20 +170,20 @@
             let loc2 = Number(lat) - 0.2
             let loc3 = Number(lon) + 0.2
             let loc4 = Number(lat) + 0.2
-            
+
             let pointsUrl = `https://www.overpass-api.de/api/interpreter?data=[out:json];node[amenity=${amenity}](${loc1.toFixed(4)}, ${loc2.toFixed(4)}, ${loc3.toFixed(4)}, ${loc4.toFixed(4)});out%20meta;`
 
             // Fetch the point geojson and set it to a map layer source
             await fetch(pointsUrl)
-                .then( res => res.json())
-                .then( res => {
+                .then(res => res.json())
+                .then(res => {
                     const data = osmtogeojson(res)
                     points = data
                     map.getSource("points").setData(points)
                 })
 
             // Make the request, then do the things
-            fetch(request).then(res => res.json())
+            await fetch(request).then(res => res.json())
                 .then(res => {
                     map.getSource("iso").setData(res);
 
