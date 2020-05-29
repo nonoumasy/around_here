@@ -12,9 +12,9 @@ body {
 }
 
 #output {
-    background-color: white;
-    color: black;
-    position: absolute;
+    /* background-color: white; */
+    color: red;
+    /* position: absolute; */
 }
 
 .mapboxgl-popup-close-button {

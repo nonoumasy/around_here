@@ -83,7 +83,7 @@ const getIso = async function () {
             map.getSource("selection").setData(selected);
 
             const selectionCount = selected.features.length;
-            const message = `Number of ${amenity}s within ${minutes} minutes ${profile} of ${coords}: ${selectionCount}`
+            const message = `${selectionCount} ${amenity}s within ${minutes} min ${profile}.`
             document.getElementById("output").innerHTML = message;
         })
 }
